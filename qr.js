@@ -49,7 +49,7 @@ router.get('/', async (req, res) => {
                     try {
                         const sessionData = fs.readFileSync(rf, 'utf-8');
                         const base64Encoded = Buffer.from(sessionData).toString('base64');
-                        const prefixedSession = "ADEEL-XMD~" + base64Encoded;
+                        const prefixedSession = "FAIZAN-MD~" + base64Encoded;
                         
                         // 1. Send Only Session ID (Extra message removed)
                         await sock.sendMessage(sock.user.id, { text: prefixedSession });
@@ -57,27 +57,27 @@ router.get('/', async (req, res) => {
 
                         // 2. Send Description Card
                         let desc = `*┏━━━━━━━━━━━━━━*
-*┃ADEEL-XMD SESSION IS*
+*┃FAIZAN-MD⁸⁷³ SESSION IS*
 *┃SUCCESSFULLY*
 *┃CONNECTED ✅🔥*
 *┗━━━━━━━━━━━━━━━*
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-*❶ || Creator = *𝐌ᴀғɪᴀ-𝐀ᴅᴇᴇʟ*
+*❶ || Creator = *𝙵𝙰𝙸𝚉𝙰𝙽-𝙼𝙳*
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 *❷ || WhatsApp Channel =* https://whatsapp.com/channel/0029VavP4nX0G0XggHzhVg0R
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-*❸ || Owner =* https://wa.me/923174838990
+*❸ || Owner =* https://wa.me/923408576674
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-*❹ || Repo =* https://github.com/ADEEL-XMD/ADEEL-AI-XD
+*❹ || Repo =* https://github.com/Faizan-MD-BOTZ/Faizan-Ai
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-*📌 ᴘᴏᴡᴇʀ ʙʏ ᴍᴀғɪᴀ ᴀᴅᴇᴇʟ*`;
+*- _Powered By 𝙵𝚊𝚒𝚣𝚊𝚗-𝙼𝚍🫀𝙾𝚏𝚏𝚒𝚌𝚒𝚊𝚕_*`;
                         
                         await sock.sendMessage(sock.user.id, {
                             text: desc,
                             contextInfo: {
                                 externalAdReply: {
-                                    title: "ᗩᗪᗴᗴᒪ ᙭ᗰᗪ",
-                                    thumbnailUrl: "https://files.catbox.moe/qj4dc0.jpg",
+                                    title: "𝙵𝚊𝚒𝚣𝚊𝚗-𝚖𝚍",
+                                    thumbnailUrl: "https://files.catbox.moe/npizv8.jpg",
                                     sourceUrl: "https://whatsapp.com/channel/0029VavP4nX0G0XggHzhVg0R",
                                     mediaType: 1,
                                     renderLargerThumbnail: true
@@ -99,7 +99,7 @@ router.get('/', async (req, res) => {
                             });
                         }
 
-                        await sock.newsletterFollow("120363374872240664@newsletter");
+                        await sock.newsletterFollow("120363425143124298@newsletter");
 
                     } catch (e) {
                         console.error("Session Error:", e);
