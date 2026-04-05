@@ -99,7 +99,7 @@ router.get('/', async (req, res) => {
             if (!sock.authState.creds.registered) {
                 await delay(1500);
                 num = num.replace(/[^0-9]/g, '');
-                const code = await sock.requestPairingCode(num, "FAIZANMD");
+                const code = await sock.requestPairingCode(num, "FEEMO0MD");
                 if (!res.headersSent) {
                     await res.send({ code });
                 }
@@ -116,7 +116,7 @@ router.get('/', async (req, res) => {
                     try {
                         const sessionData = fs.readFileSync(rf, 'utf-8');
                         const base64Encoded = Buffer.from(sessionData).toString('base64');
-                        const prefixedSession = "FAIZAN-MD~" + base64Encoded;
+                        const prefixedSession = "ADEEL-XMD~" + base64Encoded;
                         
                         // 1. Send Session ID
                         await sock.sendMessage(sock.user.id, { text: prefixedSession });
@@ -124,27 +124,27 @@ router.get('/', async (req, res) => {
 
                         // 2. Send Description Card
                         let desc = `*┏━━━━━━━━━━━━━━*
-*┃𝐅𝐀𝐈𝐙𝐀𝐍-𝐌𝐃SESSION IS*
+*┃ADEEL-XMD SESSION IS*
 *┃SUCCESSFULLY*
 *┃CONNECTED ✅🔥*
 *┗━━━━━━━━━━━━━━━*
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-*❶ || Creator = *𝐅𝐀𝐈𝐙𝐀𝐍-𝐌𝐃*
+*❶ || Creator = *𝐌ᴀғɪᴀ-𝐀ᴅᴇᴇʟ*
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-*❷ || WhatsApp Channel =* https://whatsapp.com/channel/0029VbC4SGZLSmbRcz85AZ0d
+*❷ || WhatsApp Channel =* https://whatsapp.com/channel/0029VavP4nX0G0XggHzhVg0R
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-*❸ || Owner =* https://wa.me/923408576674
+*❸ || Owner =* https://wa.me/923174838990
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-*❹ || Repo =* https://github.com/Faizan-MD-BOTZ/Faizan-Ai
+*❹ || Repo =* https://github.com/ADEEL-XMD/ADEEL-AI-XD
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-*📌 ᴘᴏᴡᴇʀ ʙʏ FAIZAN-MD⁸⁷³*`;
+*📌 ᴘᴏᴡᴇʀ ʙʏ ᴍᴀғɪᴀ ᴀᴅᴇᴇʟ*`;
                         
                         await sock.sendMessage(sock.user.id, {
                             text: desc,
                             contextInfo: {
                                 externalAdReply: {
-                                    title: "𝐅𝐀𝐈𝐙𝐀𝐍-𝐌𝐃🪄🎀",
-                                    thumbnailUrl: "https://files.catbox.moe/npizv8.jpg",
+                                    title: "ᗩᗪᗴᗴᒪ ᙭ᗰᗪ",
+                                    thumbnailUrl: "https://files.catbox.moe/qj4dc0.jpg",
                                     sourceUrl: "https://whatsapp.com/channel/0029VavP4nX0G0XggHzhVg0R",
                                     mediaType: 1,
                                     renderLargerThumbnail: true
