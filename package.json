@@ -9,7 +9,7 @@
     "restart": "pm2 restart JUTT"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "npm:wileys",
+    "@whiskeysockets/baileys": "7.0.0-rc.9",
     "@adiwajshing/keyed-db": "^0.2.4",
     "qrcode": "^1.5.3",
     "awesome-phonenumber": "^2.64.0",
@@ -20,7 +20,7 @@
     "path": "^0.12.7",
     "megajs": "1.1.7",
     "pm2": "^6.0.6",
-    "jimp": "^0.16.1",
+    "jimp": "^1.6.0",
     "async-mutex": "0.4.1"
   }
 }
