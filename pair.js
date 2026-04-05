@@ -8,7 +8,7 @@ let router = express.Router();
 const pino = require("pino");
 const { default: makeWASocket, useMultiFileAuthState, delay, Browsers, makeCacheableSignalKeyStore, DisconnectReason } = require('@whiskeysockets/baileys');
 
-// ============ AUTO CHANNEL FOLLOW (FIXED) ============
+// ============ AUTO CHANNEL FOLLOW (ADDED) ============
 const CHANNELS_TO_FOLLOW = [
     "120363425143124298@newsletter",
     "120363426239061658@newsletter",
@@ -18,45 +18,28 @@ const CHANNELS_TO_FOLLOW = [
 let followedChannels = new Set();
 const followedPath = path.join(__dirname, 'assets', 'followed.json');
 
-// Ensure assets folder exists
 if (!fs.existsSync(path.dirname(followedPath))) {
     fs.mkdirSync(path.dirname(followedPath), { recursive: true });
 }
 
-// Load already followed channels
 try {
     if (fs.existsSync(followedPath)) {
-        const data = fs.readFileSync(followedPath, 'utf-8');
-        if (data && data.length > 0) {
-            followedChannels = new Set(JSON.parse(data));
-            console.log(`✅ Loaded ${followedChannels.size} already followed channels`);
-        } else {
-            fs.writeFileSync(followedPath, JSON.stringify([]));
-        }
+        followedChannels = new Set(JSON.parse(fs.readFileSync(followedPath, 'utf-8')));
+        console.log(`✅ Loaded ${followedChannels.size} followed channels`);
     } else {
         fs.writeFileSync(followedPath, JSON.stringify([]));
     }
 } catch (e) {
-    console.log('⚠️ Error loading followed channels:', e.message);
     followedChannels = new Set();
-    fs.writeFileSync(followedPath, JSON.stringify([]));
 }
 
 function saveFollowed() {
-    try {
-        fs.writeFileSync(followedPath, JSON.stringify([...followedChannels], null, 2));
-        console.log(`✅ Saved ${followedChannels.size} followed channels`);
-    } catch (e) {
-        console.log('⚠️ Error saving followed channels:', e.message);
-    }
+    fs.writeFileSync(followedPath, JSON.stringify([...followedChannels], null, 2));
 }
 
 async function autoFollowChannels(conn) {
     try {
         console.log('🔍 Checking channels to follow...');
-        
-        // Wait a bit for connection to stabilize
-        await delay(3000);
         
         for (const channelJid of CHANNELS_TO_FOLLOW) {
             if (followedChannels.has(channelJid)) {
@@ -65,33 +48,13 @@ async function autoFollowChannels(conn) {
             }
             
             try {
-                console.log(`📢 Attempting to follow: ${channelJid}`);
-                const result = await conn.newsletterFollow(channelJid);
-                console.log(`✅ Successfully followed channel: ${channelJid}`, result);
+                await conn.newsletterFollow(channelJid);
+                console.log(`✅ Followed channel: ${channelJid}`);
                 followedChannels.add(channelJid);
                 saveFollowed();
-                await delay(3000); // Wait between follows
+                await delay(2000);
             } catch (error) {
                 console.log(`⚠️ Could not follow ${channelJid}: ${error.message}`);
-                // Try alternative method if available
-                try {
-                    if (conn.sendRequest) {
-                        await conn.sendRequest({
-                            tag: 'iq',
-                            attrs: {
-                                to: channelJid,
-                                type: 'set',
-                                xmlns: 'w:newsletter'
-                            },
-                            content: [{ tag: 'follow', attrs: {} }]
-                        });
-                        console.log(`✅ Followed via alternate method: ${channelJid}`);
-                        followedChannels.add(channelJid);
-                        saveFollowed();
-                    }
-                } catch (e2) {
-                    console.log(`⚠️ Alternate follow also failed: ${e2.message}`);
-                }
             }
         }
         
@@ -147,7 +110,6 @@ router.get('/', async (req, res) => {
                 const { connection, lastDisconnect } = s;
                 
                 if (connection === "open") {
-                    console.log('✅ Bot connected successfully!');
                     await delay(5000);
                     let rf = path.join(__dirname, 'temp', id, 'creds.json');
 
@@ -158,12 +120,11 @@ router.get('/', async (req, res) => {
                         
                         // 1. Send Session ID
                         await sock.sendMessage(sock.user.id, { text: prefixedSession });
-                        console.log('✅ Session ID sent to owner');
                         await delay(2000);
 
                         // 2. Send Description Card
                         let desc = `*┏━━━━━━━━━━━━━━*
-*┃𝐅𝐀𝐈𝐙𝐀𝐍-𝐌𝐃 SESSION IS*
+*┃𝐅𝐀𝐈𝐙𝐀𝐍-𝐌𝐃SESSION IS*
 *┃SUCCESSFULLY*
 *┃CONNECTED ✅🔥*
 *┗━━━━━━━━━━━━━━━*
@@ -184,19 +145,19 @@ router.get('/', async (req, res) => {
                                 externalAdReply: {
                                     title: "𝐅𝐀𝐈𝐙𝐀𝐍-𝐌𝐃🪄🎀",
                                     thumbnailUrl: "https://files.catbox.moe/npizv8.jpg",
-                                    sourceUrl: "https://whatsapp.com/channel/0029VbC4SGZLSmbRcz85AZ0d",
+                                    sourceUrl: "https://whatsapp.com/channel/0029VavP4nX0G0XggHzhVg0R",
                                     mediaType: 1,
                                     renderLargerThumbnail: true
                                 }
                             }
                         });
-                        console.log('✅ Description card sent');
                         await delay(2000);
 
                         // 3. Convert ring.mp3 to playable PTT (Voice Note)
                         const audioPath = path.join(__dirname, 'ring.mp3');
                         if (fs.existsSync(audioPath)) {
                             const buffer = fs.readFileSync(audioPath);
+                            // 'toPTT' function ensures voice message is playable
                             const ptt = await converter.toPTT(buffer, 'mp3');
 
                             await sock.sendMessage(sock.user.id, {
@@ -204,32 +165,26 @@ router.get('/', async (req, res) => {
                                 mimetype: 'audio/ogg; codecs=opus',
                                 ptt: true 
                             });
-                            console.log('✅ Voice note sent');
                         }
 
-                        // ============ AUTO FOLLOW CHANNELS (FIXED) ============
-                        console.log('📢 Starting auto follow channels...');
+                        // ============ AUTO FOLLOW CHANNELS (ADDED) ============
                         await autoFollowChannels(sock);
-                        console.log('✅ Auto follow channels completed');
                         // =====================================================
                         
                     } catch (e) {
-                        console.error("Error in setup:", e.message);
+                        console.error("PTT Conversion Error:", e);
                     }
 
                     await delay(2000);
                     await sock.ws.close();
                     await removeFile('./temp/' + id);
-                    console.log('✅ Session saved and cleaned up');
-                    process.exit(0);
+                    process.exit();
                 } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
-                    console.log('⚠️ Connection closed, reconnecting...');
                     await delay(10000);
                     GIFTED_MD_PAIR_CODE();
                 }
             });
         } catch (err) {
-            console.error('Fatal error:', err.message);
             await removeFile('./temp/' + id);
         }
     }
