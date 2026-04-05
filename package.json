@@ -4,12 +4,12 @@
   "description": "A multi functional whatsapp bot Web paircode.",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start index.js --deep-monitoring --attach --name FAIZAN-JUTT",
-    "stop": "pm2 stop FAIZAN-JUTT",
-    "restart": "pm2 restart JUTT"
+    "start": "pm2 start index.js --deep-monitoring --attach --name ADEEL-AI",
+    "stop": "pm2 stop ADEEL-AI",
+    "restart": "pm2 restart ADEEL-AI"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "7.0.0-rc.9",
+    "@whiskeysockets/baileys": "npm:wileys",
     "@adiwajshing/keyed-db": "^0.2.4",
     "qrcode": "^1.5.3",
     "awesome-phonenumber": "^2.64.0",
@@ -20,7 +20,7 @@
     "path": "^0.12.7",
     "megajs": "1.1.7",
     "pm2": "^6.0.6",
-    "jimp": "^1.6.0",
+    "jimp": "^0.16.1",
     "async-mutex": "0.4.1"
   }
 }
